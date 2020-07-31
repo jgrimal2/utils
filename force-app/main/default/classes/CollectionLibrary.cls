@@ -5,12 +5,17 @@ public with sharing class CollectionLibrary {
     Schema.DisplayType.REFERENCE
   };
 
+  static Set<Schema.DisplayType> validStringFieldTypes = new Set<Schema.DisplayType>{
+    Schema.DisplayType.PICKLIST,
+    Schema.DisplayType.STRING,
+    Schema.DisplayType.TEXTAREA
+  };
   private static Boolean isValidIdField(SObjectField field) {
     return validIdFieldTypes.contains(field.getDescribe().getType());
   }
 
   private static Boolean isValidStringField(SObjectField field) {
-    return field.getDescribe().getType() == Schema.DisplayType.STRING;
+    return validStringFieldTypes.contains(field.getDescribe().getType());
   }
 
   public static List<Id> getListOfIds(List<SObject> inputList) {
@@ -46,20 +51,13 @@ public with sharing class CollectionLibrary {
   }
 
   public static Map<Id, SObject> getMap(List<SObject> inputList, SObjectField field) {
+    if (!isValidIdField(field)) {
+      throw new InnerException(field.getDescribe().getName() + ' is not of valid type');
+    }
     Map<Id, SObject> returnMap = new Map<Id, SObject>();
-    String fieldName = field.getDescribe().getName();
-    if (!inputList.isEmpty()) {
-      SObjectType sObjectType = inputList[0].getSObjectType();
-      if (sObjectType.getdescribe().fields.getmap().containsKey(fieldName)) {
-        if (!isValidIdField(field)) {
-          throw new InnerException(fieldName + ' is not of valid type');
-        }
-        for (SObject o : inputList) {
-          if (o.get(fieldName) != null) {
-            returnMap.put((Id) o.get(fieldName), o);
-          }
-        }
-      }
+    Map<String, SObject> internalMap = getMapByString(inputList, field);
+    for (String key : internalMap.keySet()) {
+      returnMap.put((Id) key, internalMap.get(key));
     }
     return returnMap;
   }
@@ -104,16 +102,14 @@ public with sharing class CollectionLibrary {
   public static Map<String, List<SObject>> getMapOfLists(List<SObject> inputList, SobjectField field) {
     Map<String, List<SObject>> returnMap = new Map<String, List<SObject>>();
     String fieldName = field.getDescribe().getName();
-    if (!isValidStringField(field)) {
+    if (!isValidStringField(field) && !isValidIdField(field)) {
       throw new InnerException(fieldName + ' is not of valid type');
     }
     for (SObject o : inputList) {
-      System.debug(o);
-      System.debug(returnMap);
       if (o.get(fieldName) != null) {
         String key = (String) o.get(fieldName);
         if (String.isNotBlank(key)) {
-          if (!returnMap.containsKey(fieldName)) {
+          if (!returnMap.containsKey(key)) {
             returnMap.put(key, new List<SObject>());
           }
           returnMap.get(key).add(o);
