@@ -32,6 +32,13 @@ jobs:
       - name: Push Source into Scratch Org
         run: sfdx force:source:push -u testScratchOrg
         
+      - name: Run Local Tests
+        run: sfdx force:org:list
         
+      - name: Destroy Test Scratch Org
+        run: sfdx force:org:delete -u testScratchOrg
+
+      - name: Check registry
+        run: sfdx force:org:list
 
         
