@@ -16,9 +16,7 @@ jobs:
           java-version: 1.8
           java-package: jdk
           
-      - name: Install SFDX
-        run: npm install sfdx-cli
       
+      - uses: sfdx-actions/setup-sfdx@v1
       - name: Install Scanner
         run: sfdx plugins:install @salesforce/sfdx-scanner
-
