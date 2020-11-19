@@ -36,7 +36,7 @@ jobs:
         run: sfdx force:org:list
         
       - name: Destroy Test Scratch Org
-        run: sfdx force:org:delete -u testScratchOrg
+        run: sfdx force:org:delete -u testScratchOrg -p
 
       - name: Check registry
         run: sfdx force:org:list
