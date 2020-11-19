@@ -31,7 +31,7 @@ private class CollectionLibraryTest {
     Exception ex;
     Test.startTest();
     try {
-      List<Id> listOfIds = CollectionLibrary.getListOfIds(buildListOfAccounts(), Account.Name);
+      CollectionLibrary.getListOfIds(buildListOfAccounts(), Account.Name);
     } catch (Exception e) {
       ex = e;
     }
@@ -54,7 +54,7 @@ private class CollectionLibraryTest {
     Exception ex;
     Test.startTest();
     try {
-      List<String> listOfIds = CollectionLibrary.getListOfStrings(buildListOfAccounts(), Account.NumberOfEmployees);
+      CollectionLibrary.getListOfStrings(buildListOfAccounts(), Account.NumberOfEmployees);
     } catch (Exception e) {
       ex = e;
     }
@@ -93,7 +93,7 @@ private class CollectionLibraryTest {
     Exception ex;
     Test.startTest();
     try {
-      Map<Id, SObject> mapOfAccounts = CollectionLibrary.getMap(buildListOfAccounts(), Account.Name);
+      CollectionLibrary.getMap(buildListOfAccounts(), Account.Name);
     } catch (Exception e) {
       ex = e;
     }
@@ -116,10 +116,7 @@ private class CollectionLibraryTest {
     Exception ex;
     Test.startTest();
     try {
-      Map<String, SObject> mapOfAccounts = CollectionLibrary.getMapByString(
-        buildListOfAccounts(),
-        Account.NumberOfEmployees
-      );
+      CollectionLibrary.getMapByString(buildListOfAccounts(), Account.NumberOfEmployees);
     } catch (Exception e) {
       ex = e;
     }
@@ -127,6 +124,13 @@ private class CollectionLibraryTest {
     System.assertNotEquals(null, ex, 'No exception thrown');
     System.assertEquals('CollectionLibrary.InnerException', ex.getTypeName(), 'Exception type does not match');
     System.assertEquals('NumberOfEmployees is not of valid type', ex.getMessage(), 'Error message does not match');
+  }
+  @isTest
+  static void testGetMapByStringEmptyList() {
+    Test.startTest();
+    Map<String, SObject> resultMap = CollectionLibrary.getMapByString(new List<Account>(), Account.Name);
+    Test.stopTest();
+    System.assertEquals(true, resultMap.isEmpty(), 'Result Map should be empty');
   }
 
   @isTest
@@ -142,7 +146,7 @@ private class CollectionLibraryTest {
     Exception ex;
     Test.startTest();
     try {
-      Map<Id, Id> mapOfIds = CollectionLibrary.getMapOfIds(buildListOfAccounts(), Account.Name, Account.OwnerId);
+      CollectionLibrary.getMapOfIds(buildListOfAccounts(), Account.Name, Account.OwnerId);
     } catch (Exception e) {
       ex = e;
     }
@@ -157,11 +161,7 @@ private class CollectionLibraryTest {
     Exception ex;
     Test.startTest();
     try {
-      Map<Id, Id> mapOfIds = CollectionLibrary.getMapOfIds(
-        buildListOfAccounts(),
-        Account.Id,
-        Account.NumberOfEmployees
-      );
+      CollectionLibrary.getMapOfIds(buildListOfAccounts(), Account.Id, Account.NumberOfEmployees);
     } catch (Exception e) {
       ex = e;
     }
@@ -201,7 +201,6 @@ private class CollectionLibraryTest {
     Integer i = 0;
     for (Account acc : listOfAccounts) {
       acc.BillingCity = 'Ciudad ' + String.valueOf(Math.mod(++i, 3));
-      System.debug(acc);
     }
     Test.startTest();
     Map<String, List<SObject>> mapOfLists = CollectionLibrary.getMapOfLists(listOfAccounts, Account.BillingCity);
@@ -214,10 +213,7 @@ private class CollectionLibraryTest {
     Exception ex;
     Test.startTest();
     try {
-      Map<String, List<SObject>> mapOfLists = CollectionLibrary.getMapOfLists(
-        buildListOfAccounts(),
-        Account.NumberOfEmployees
-      );
+      CollectionLibrary.getMapOfLists(buildListOfAccounts(), Account.NumberOfEmployees);
     } catch (Exception e) {
       ex = e;
     }

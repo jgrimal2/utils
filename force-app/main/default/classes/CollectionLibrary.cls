@@ -51,7 +51,7 @@ public with sharing class CollectionLibrary {
       throw new InnerException(fieldName + ' is not of valid type');
     }
     for (SObject o : inputList) {
-      listOfIds.add((Id) o.get(fieldName));
+      listOfIds.add((Id) o?.get(fieldName));
     }
     return listOfIds;
   }
@@ -68,7 +68,7 @@ public with sharing class CollectionLibrary {
       throw new InnerException(fieldName + ' is not of valid type');
     }
     for (SObject o : inputList) {
-      listOfStrings.add((String) o.get(fieldName));
+      listOfStrings.add((String) o?.get(fieldName));
     }
     return listOfStrings;
   }
@@ -106,18 +106,14 @@ public with sharing class CollectionLibrary {
   public static Map<String, SObject> getMapByString(List<SObject> inputList, SObjectField field) {
     Map<String, SObject> returnMap = new Map<String, SObject>();
     String fieldName = field.getDescribe().getName();
-    if (!inputList.isEmpty()) {
-      SObjectType sObjectType = inputList[0].getSObjectType();
-      if (sObjectType.getdescribe().fields.getmap().containsKey(fieldName)) {
-        if (!isValidStringField(field) && !isValidIdField(field)) {
-          throw new InnerException(fieldName + ' is not of valid type');
-        }
-        for (SObject o : inputList) {
-          if (o.get(fieldName) != null) {
-            returnMap.put((String) o.get(fieldName), o);
-          }
-        }
-      }
+    if (inputList.isEmpty()) {
+      return returnMap;
+    }
+    if (!isValidStringField(field) && !isValidIdField(field)) {
+      throw new InnerException(fieldName + ' is not of valid type');
+    }
+    for (SObject o : inputList) {
+      returnMap.put((String) o?.get(fieldName), o);
     }
     return returnMap;
   }
@@ -139,9 +135,7 @@ public with sharing class CollectionLibrary {
       throw new InnerException(valueName + ' is not of valid type');
     }
     for (SObject o : inputList) {
-      if (o.get(keyName) != null) {
-        returnMap.put((Id) o.get(keyName), (Id) o.get(valueName));
-      }
+      returnMap.put((Id) o?.get(keyName), (Id) o?.get(valueName));
     }
     return returnMap;
   }
@@ -158,15 +152,11 @@ public with sharing class CollectionLibrary {
       throw new InnerException(fieldName + ' is not of valid type');
     }
     for (SObject o : inputList) {
-      if (o.get(fieldName) != null) {
-        String key = (String) o.get(fieldName);
-        if (String.isNotBlank(key)) {
-          if (!returnMap.containsKey(key)) {
-            returnMap.put(key, new List<SObject>());
-          }
-          returnMap.get(key).add(o);
-        }
+      String key = (String) o.get(fieldName);
+      if (String.isNotBlank(key) && !returnMap.containsKey(key)) {
+        returnMap.put(key, new List<SObject>());
       }
+      returnMap?.get(key).add(o);
     }
     return returnMap;
   }
