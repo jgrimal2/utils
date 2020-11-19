@@ -16,24 +16,27 @@ jobs:
         with:
           java-version: 1.8
           java-package: jdk
-                
-      - uses: sfdx-actions/setup-sfdx@v1
-        with:
-          sfdx-auth-url: ${{ secrets.SFDX_AUTH_URL }}
+      
+      - name: Install sfdx
+        run: npm install sfdx
+
       - name: Install Scanner
         run: sfdx plugins:install @salesforce/sfdx-scanner
       
       - name: Scan base
         run: sfdx scanner:run --target ".\**\*" -v
 
+      - name: Devhub registry
+        run: sfdx force:auth:sfdxurl:store -f ${{ secrets.SFDX_AUTH_URL }} -a DevHub -d
+
       - name: Create Test Scratch Org
-        run: sfdx force:org:create -f config/project-scratch-def.json -a testScratchOrg -v SFDX-ENV
+        run: sfdx force:org:create -f config/project-scratch-def.json -a testScratchOrg -v
 
       - name: Push Source into Scratch Org
         run: sfdx force:source:push -u testScratchOrg
         
       - name: Run Local Tests
-        run: sfdx force:org:list
+        run: sfdx force:apex:test:run -c --verbose
         
       - name: Destroy Test Scratch Org
         run: sfdx force:org:delete -u testScratchOrg -p
