@@ -18,6 +18,8 @@ jobs:
           java-package: jdk
                 
       - uses: sfdx-actions/setup-sfdx@v1
+        with:
+          sfdx-auth-url: ${{ secrets.SFDX_AUTH_URL }}
       - name: Install Scanner
         run: sfdx plugins:install @salesforce/sfdx-scanner
       
