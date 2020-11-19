@@ -22,4 +22,7 @@ jobs:
         run: sfdx plugins:install @salesforce/sfdx-scanner
       
       - name: Scan base
-        run: sfdx scanner:run --target ".\**\*" --json
+        run: sfdx scanner:run --target ".\**\*" -v
+
+      - name: Check registry
+        run: sfdx force:org:list
