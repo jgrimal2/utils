@@ -1,4 +1,5 @@
 # Utils
+![push-to-master](https://github.com/jgrimaldos-everis/utils/workflows/push-to-master/badge.svg)
 
 Este proyecto pretende agrupar varias utilidades que pretenden agilizar el desarrollo de diferentes funcionalidades
 
