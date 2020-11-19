@@ -36,6 +36,7 @@ Map<String, List<SObject>> mapCases = CollectionLibrary.getMapOfLists([
     Case.AccountId
 );
 ```
+
 `mapCase` es un mapa en el cual la llave es el id de la cuenta y la lista tiene todos los casos que pertenecen al propietario que se ha filtrado en la consulta de contactos
 
 ## Instalación
