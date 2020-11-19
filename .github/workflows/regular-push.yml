@@ -1,11 +1,10 @@
-name: CI
+name: regular-push
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-  
+    branches-ignore:
+    - 'master'
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -16,10 +15,12 @@ jobs:
         with:
           java-version: 1.8
           java-package: jdk
-                
-      - uses: sfdx-actions/setup-sfdx@v1
+
+      - name: Install sfdx
+        run: npm install sfdx-cli
+
       - name: Install Scanner
-        run: sfdx plugins:install @salesforce/sfdx-scanner
-      
+        run: node_modules/sfdx-cli/bin/run plugins:install @salesforce/sfdx-scanner
+
       - name: Scan base
-        run: sfdx scanner:run --target ".\**\*" --json
+        run: node_modules/sfdx-cli/bin/run scanner:run --target ".\**\*" --violations-cause-error
