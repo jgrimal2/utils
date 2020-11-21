@@ -1,4 +1,4 @@
-name: Deploy To Master
+name: push-to-master
 on:
   workflow_dispatch:
   push:
@@ -47,31 +47,3 @@ jobs:
 
       - name: Check registry
         run: node_modules/sfdx-cli/bin/run force:org:list
-
-name: Regular Push
-on:
-  workflow_dispatch:
-  push:
-    branches-ignore: [master]
-  pull_request:
-    branches-ignore: [master]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup Java JDK
-        uses: actions/setup-java@v1.4.3
-        with:
-          java-version: 1.8
-          java-package: jdk
-
-      - name: Install sfdx
-        run: npm install sfdx-cli
-
-      - name: Install Scanner
-        run: node_modules/sfdx-cli/bin/run plugins:install @salesforce/sfdx-scanner
-
-      - name: Scan base
-        run: node_modules/sfdx-cli/bin/run scanner:run --target ".\**\*" --violations-cause-error
