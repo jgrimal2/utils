@@ -1,0 +1,46 @@
+name: push-to-master
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Java JDK
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 1.8
+          java-package: jdk
+
+      - name: Install sfdx
+        run: npm install sfdx-cli
+
+      - name: Install Scanner
+        run: node_modules/sfdx-cli/bin/run plugins:install @salesforce/sfdx-scanner
+
+      - name: Scan base
+        run: node_modules/sfdx-cli/bin/run scanner:run --target ".\**\*" --violations-cause-error
+
+      - name: DevHub registry
+        run: |
+          echo "${SFDX_AUTH_URL}" > authUrl
+          node_modules/sfdx-cli/bin/run force:auth:sfdxurl:store --setalias=DevHub --setdefaultdevhubusername --sfdxurlfile=authUrl 
+        env:
+          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+
+      - name: Create Test Scratch Org
+        run: node_modules/sfdx-cli/bin/run force:org:create --definitionfile=config/project-scratch-def.json --durationdays=1 --nonamespace --setalias=testScratchOrg --setdefaultusername
+
+      - name: Push Source into Scratch Org
+        run: node_modules/sfdx-cli/bin/run force:source:push
+
+      - name: Run Local Tests
+        run: node_modules/sfdx-cli/bin/run force:apex:test:run --codecoverage --resultformat=json --testlevel=RunLocalTests
+
+      - name: Destroy Test Scratch Org
+        run: node_modules/sfdx-cli/bin/run force:org:delete --noprompt --targetusername=testScratchOrg 
+
+      - name: Check registry
+        run: node_modules/sfdx-cli/bin/run force:org:list
