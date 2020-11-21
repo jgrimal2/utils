@@ -24,26 +24,26 @@ jobs:
         run: node_modules/sfdx-cli/bin/run plugins:install @salesforce/sfdx-scanner
 
       - name: Scan base
-        run: node_modules/sfdx-cli/bin/run scanner:run --target ".\**\*" -v
+        run: node_modules/sfdx-cli/bin/run scanner:run --target ".\**\*" --violations-cause-error
 
       - name: DevHub registry
         run: |
           echo "${SFDX_AUTH_URL}" > authUrl
-          node_modules/sfdx-cli/bin/run force:auth:sfdxurl:store -f authUrl -a DevHub -d -s
+          node_modules/sfdx-cli/bin/run force:auth:sfdxurl:store -sfdxurlfile=authUrl --setalias=DevHub --setdefaultdevhubusername
         env:
           SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
 
       - name: Create Test Scratch Org
-        run: node_modules/sfdx-cli/bin/run force:org:create -f config/project-scratch-def.json -a testScratchOrg -v DevHub -d 1 -n
+        run: node_modules/sfdx-cli/bin/run force:org:create --definitionfile=config/project-scratch-def.json --durationdays=1 --nonamespace --setdefaultusername
 
       - name: Push Source into Scratch Org
-        run: node_modules/sfdx-cli/bin/run force:source:push -u testScratchOrg
+        run: node_modules/sfdx-cli/bin/run force:source:push
 
       - name: Run Local Tests
-        run: node_modules/sfdx-cli/bin/run force:apex:test:run -c -r json
+        run: node_modules/sfdx-cli/bin/run force:apex:test:run --codecoverage --resultformat=json --testlevel=RunLocalTests
 
       - name: Destroy Test Scratch Org
-        run: node_modules/sfdx-cli/bin/run force:org:delete -u testScratchOrg -p
+        run: node_modules/sfdx-cli/bin/run force:org:delete --targetusername=testScratchOrg --noprompt
 
       - name: Check registry
         run: node_modules/sfdx-cli/bin/run force:org:list
