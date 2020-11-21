@@ -22,11 +22,6 @@ public with sharing class CollectionLibrary {
   private static Boolean isValidIdField(SObjectField field) {
     return validIdFieldTypes.contains(field.getDescribe().getType());
   }
-  /**
-   * @description Verifies if valid String field
-   * @param  field field name
-   * @return       true if valid string
-   */
   private static Boolean isValidStringField(SObjectField field) {
     return validStringFieldTypes.contains(field.getDescribe().getType());
   }
