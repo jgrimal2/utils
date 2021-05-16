@@ -43,19 +43,12 @@ Map<String, List<SObject>> mapCases = CollectionLibrary.getMapOfLists([
 
 ### Sandbox / Dev
 
-Puedes hacer click en el siguiente botón:
-
-<a href="https://githubsfdeploy.herokuapp.com?owner=jgrimaldos-everis&repo=utils&ref=v1.0">
-  <img alt="Deploy to Salesforce"
-       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
-</a>
-
 Si deseas realizarlo de manera manual puedes seguir los siguientes pasos:
 
 1. Clonar el repo en tu máquina:
    ```bash
-   git clone https://github.com/trailheadapps/lwc-recipes
-   cd lwc-recipes
+   git clone https://umane.everis.com/git/EVRSALES/utils.git
+   cd utils
    ```
 2. Autorizar tu ambiente (en caso de ya tenerlo autorizado, utiliza tu `alias` en lugar de `ambiente`):
    ```bash
@@ -75,7 +68,7 @@ Si deseas realizarlo de manera manual puedes seguir los siguientes pasos:
 Puedes ejecutar los siguientes comandos (asumiendo correcta configuración de **VS Code**):
 
 ```bash
-git clone https://github.com/jgrimaldos-everis/utils
+git clone https://umane.everis.com/git/EVRSALES/utils.git
 cd utils
 sfdx force:source:push -u usuario-de-scratchorg
 ```
